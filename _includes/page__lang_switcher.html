@@ -1,0 +1,71 @@
+{% comment %}
+Language switcher for bilingual posts (Korean/English)
+Usage: Add to post front matter:
+lang: "en" (or "ko")
+translation: "/path/to/translated-post" (optional, for linking to translated version)
+{% endcomment %}
+
+{% if page.lang or page.translation %}
+{% assign current_lang = page.lang | default: "ko" %}
+{% assign other_lang = "en" %}
+{% if current_lang == "en" %}
+{% assign other_lang = "ko" %}
+{% endif %}
+
+<div class="page__lang-switcher"
+    style="margin: 1em 0; padding: 0.75em; background-color: var(--notice-info-bg, #e3f2fd); border-left: 4px solid var(--notice-info-border, #2196f3); border-radius: 4px;">
+    <div style="display: flex; align-items: center; gap: 0.5em; flex-wrap: wrap;">
+        <span style="font-weight: 600; color: var(--notice-info-text, #1976d2);">
+            <i class="fas fa-language" aria-hidden="true"></i>
+            {% if current_lang == "ko" %}
+            한국어
+            {% else %}
+            English
+            {% endif %}
+        </span>
+
+        {% if page.translation %}
+        {% assign translation_url = page.translation | relative_url %}
+        <a href="{{ translation_url }}" class="btn btn--small btn--info" style="margin-left: auto;">
+            {% if current_lang == "ko" %}
+            <i class="fas fa-globe" aria-hidden="true"></i> Read in English
+            {% else %}
+            <i class="fas fa-globe" aria-hidden="true"></i> 한국어로 읽기
+            {% endif %}
+        </a>
+      {% else %}
+        {% comment %} Try to find translation by matching post base name (removing -ko or -en suffix) {% endcomment %}
+        {% assign post_filename = page.path | split: '/' | last | split: '.' | first %}
+        {% assign post_base = post_filename | replace: '-ko', '' | replace: '-en', '' %}
+        {% assign found_translation = false %}
+        {% for post in site.posts %}
+          {% if post.url != page.url and post.lang == other_lang %}
+            {% assign other_filename = post.path | split: '/' | last | split: '.' | first %}
+            {% assign other_base = other_filename | replace: '-ko', '' | replace: '-en', '' %}
+            {% if other_base == post_base %}
+              <a href="{{ post.url | relative_url }}" class="btn btn--small btn--info" style="margin-left: auto;">
+                {% if current_lang == "ko" %}
+                  <i class="fas fa-globe" aria-hidden="true"></i> Read in English
+                {% else %}
+                  <i class="fas fa-globe" aria-hidden="true"></i> 한국어로 읽기
+                {% endif %}
+              </a>
+              {% assign found_translation = true %}
+              {% break %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% unless found_translation %}
+        <span style="font-size: 0.9em; color: var(--notice-info-text, #1976d2); opacity: 0.8;">
+            {% if current_lang == "ko" %}
+            (영어 번역본 준비 중)
+            {% else %}
+            (Korean translation coming soon)
+            {% endif %}
+        </span>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}
