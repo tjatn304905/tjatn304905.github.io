@@ -147,7 +147,3 @@ Structural typing is flexible, but sometimes too permissive.
 
 ---
 
-## 📍 One-sentence Summary
-
-TypeScript considers types equal if they look the same, while Java considers them equal only if they are explicitly declared as the same.
-

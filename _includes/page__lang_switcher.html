@@ -33,27 +33,27 @@ translation: "/path/to/translated-post" (optional, for linking to translated ver
             <i class="fas fa-globe" aria-hidden="true"></i> 한국어로 읽기
             {% endif %}
         </a>
-      {% else %}
+        {% else %}
         {% comment %} Try to find translation by matching post base name (removing -ko or -en suffix) {% endcomment %}
         {% assign post_filename = page.path | split: '/' | last | split: '.' | first %}
         {% assign post_base = post_filename | replace: '-ko', '' | replace: '-en', '' %}
         {% assign found_translation = false %}
         {% for post in site.posts %}
-          {% if post.url != page.url and post.lang == other_lang %}
-            {% assign other_filename = post.path | split: '/' | last | split: '.' | first %}
-            {% assign other_base = other_filename | replace: '-ko', '' | replace: '-en', '' %}
-            {% if other_base == post_base %}
-              <a href="{{ post.url | relative_url }}" class="btn btn--small btn--info" style="margin-left: auto;">
-                {% if current_lang == "ko" %}
-                  <i class="fas fa-globe" aria-hidden="true"></i> Read in English
-                {% else %}
-                  <i class="fas fa-globe" aria-hidden="true"></i> 한국어로 읽기
-                {% endif %}
-              </a>
-              {% assign found_translation = true %}
-              {% break %}
+        {% if post.url != page.url and post.lang == other_lang %}
+        {% assign other_filename = post.path | split: '/' | last | split: '.' | first %}
+        {% assign other_base = other_filename | replace: '-ko', '' | replace: '-en', '' %}
+        {% if other_base == post_base %}
+        <a href="{{ post.url | relative_url }}" class="btn btn--small btn--info" style="margin-left: auto;">
+            {% if current_lang == "ko" %}
+            <i class="fas fa-globe" aria-hidden="true"></i> Read in English
+            {% else %}
+            <i class="fas fa-globe" aria-hidden="true"></i> 한국어로 읽기
             {% endif %}
-          {% endif %}
+        </a>
+        {% assign found_translation = true %}
+        {% break %}
+        {% endif %}
+        {% endif %}
         {% endfor %}
 
         {% unless found_translation %}
